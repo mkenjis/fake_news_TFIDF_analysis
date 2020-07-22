@@ -2,7 +2,7 @@
 fake news prediction using TFIDF analysis
 
 - use TF-IDF data processing and feature extraction for relevant words
-- use news dataset to train different classification regression models from MLlib.
+- use a set of fake and real news dataset to train different classification regression models from MLlib.
 - use trained model to identify which ones have a better performance.
 		 
 # Requirements: 
