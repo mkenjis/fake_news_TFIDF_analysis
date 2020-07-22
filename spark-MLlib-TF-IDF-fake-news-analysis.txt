@@ -14,14 +14,14 @@ fake_txt1.saveAsTextFile("fake_news.csv")
 > cat part-00000 part-00001 >../fake.csv
 
 
-val true_txt = sc.textFile("fake_news/True.csv").filter( x => x.length > 0).map( x => {
+val real_txt = sc.textFile("fake_news/True.csv").filter( x => x.length > 0).map( x => {
    if (x(0) == ' ') "\"" + x.replaceFirst(",\"","\",\"")
    else x
  })
  
-val true_txt1 = true_txt.map( x => x.replaceAll("\"\"",""))
+val real_txt1 = real_txt.map( x => x.replaceAll("\"\"",""))
 
-true_txt1.saveAsTextFile("true_news.csv")
+real_txt1.saveAsTextFile("true_news.csv")
 
 > cd true_news.csv
 
@@ -33,20 +33,20 @@ true_txt1.saveAsTextFile("true_news.csv")
 val fake_news = spark.read.format("csv").option("sep",",").option("quoteAll","true").option("header","true").
                 load("fake.csv").where("text is not null")
 
-val fake_news1 = fake_news.where("subject in ('left-news','US_News','politics','News','Government News','Middle-east')").rdd
+val fake_news1 = fake_news.where("subject in ('US_News','left-news','politics','Government News','Middle-east','News')").rdd
 
 val fake_rdd = fake_news1.map( x => x.toSeq).map( x => x.toArray.map( x => x.toString))
 
-val fake_lbl = fake_rdd.map( x => Array("1",x(0),x(1),x(2),x(3)) )
+val fake_lbl = fake_rdd.map( x => Array("1", x(0), x(1), x(2), x(3)) )
 
-val true_news = spark.read.format("csv").option("sep",",").option("quoteAll","true").option("header","true").
+val real_news = spark.read.format("csv").option("sep",",").option("quoteAll","true").option("header","true").
                 load("true.csv").where("text is not null").rdd
 
-val true_rdd = true_news.map( x => x.toSeq).map( x => x.toArray.map( x => x.toString))
+val real_rdd = real_news.map( x => x.toSeq).map( x => x.toArray.map( x => x.toString))
 
-val true_lbl = true_rdd.map( x => Array("0",x(0),x(1),x(2),x(3)) )
+val real_lbl = real_rdd.map( x => Array("0", x(0), x(1), x(2), x(3)) )
 
-val rdd = true_lbl.union(fake_lbl)
+val rdd = real_lbl.union(fake_lbl)
 
 val rdd2 = rdd.map( x => Array(x(2).toString,x(0).toString))
 
