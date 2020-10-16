@@ -1,8 +1,11 @@
 # fake_news_prediction_using_TFIDF
 fake news prediction using TFIDF analysis
+- Source : Kaggle Dataset
+- URL : https://www.kaggle.com/clmentbisaillon/fake-and-real-news-dataset
 
-- use TF-IDF data processing and feature extraction for relevant words
-- use a set of fake and real news dataset to train different classification regression models from MLlib.
+# Purpose: 
+- uae TF-IDF data processing and feature extraction for relevant words
+- use news dataset to train different classification regression models from MLlib.
 - use trained model to identify which ones have a better performance.
 		 
 # Requirements: 
