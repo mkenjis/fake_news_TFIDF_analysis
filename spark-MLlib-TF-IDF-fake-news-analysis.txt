@@ -46,12 +46,12 @@ val real_rdd = real_news.map( x => x.toSeq).map( x => x.toArray.map( x => x.toSt
 
 val real_lbl = real_rdd.map( x => Array("0", x(0), x(1), x(2), x(3)) )
 
-val rdd = real_lbl.union(fake_lbl)
+val rdd1 = real_lbl.union(fake_lbl)
 
-val rdd2 = rdd.map( x => Array(x(2).toString,x(0).toString))
+val rdd = rdd1.map( x => Array(x(2).toString,x(0).toString))
 
 -- remove nonword characters (such as punctuation).
-val nonWordSplit = rdd2.flatMap(x => x(0).split("""\W+""").map(_.toLowerCase))
+val nonWordSplit = rdd.flatMap(x => x(0).split("""\W+""").map(_.toLowerCase))
 nonWordSplit.sample(true, 0.3, 42).take(100).mkString(",")
 nonWordSplit.distinct.count  // 122002
 
@@ -100,11 +100,11 @@ def tokenize(line: String): Seq[String] = {
  .toSeq
 }
 
-rdd2.flatMap(x => tokenize(x(0))).distinct.count
+rdd.flatMap(x => tokenize(x(0))).distinct.count
 res27: Long = 74345
 
 
-val sets = rdd2.randomSplit(Array(0.8,0.2))
+val sets = rdd.randomSplit(Array(0.8,0.2))
 val trainSet = sets(0)
 val testSet = sets(1)
 
@@ -141,27 +141,6 @@ val v2 = tfidf.first.asInstanceOf[SV]
 println(v2.values.size)
 println(v2.values.take(10).toSeq)
 println(v2.indices.take(10).toSeq)
-
----------------------
-
--- TF-IDF weighting will tend to assign a lower weighting to common terms. To see
- - this, we can compute the TF-IDF representation for a few of the terms that appear in
--- the list of top occurrences that we previously computed, such as you, do, and we:
-
-val common = sc.parallelize(Seq(Seq("you", "do", "we")))
-val tfCommon = hashingTF.transform(common)
-val tfidfCommon = idf.transform(tfCommon)
-val commonVector = tfidfCommon.first.asInstanceOf[SV]
-println(commonVector.values.toSeq)
-
---  let's apply the same transformation to a few less common terms that we might
--- intuitively associate with being more linked to specific topics or concepts:
-
-val uncommon = sc.parallelize(Seq(Seq("telescope", "legislation", "investment")))
-val tfUncommon = hashingTF.transform(uncommon)
-val tfidfUncommon = idf.transform(tfUncommon)
-val uncommonVector = tfidfUncommon.first.asInstanceOf[SV]
-println(uncommonVector.values.toSeq)
 
 --------------------------------
 
