@@ -1,4 +1,4 @@
-# fake_news_prediction_using_TFIDF
+# fake_news_TFIDF_analysis
 fake news prediction using TFIDF analysis
 - Source : Kaggle Dataset
 - URL : https://www.kaggle.com/clmentbisaillon/fake-and-real-news-dataset
